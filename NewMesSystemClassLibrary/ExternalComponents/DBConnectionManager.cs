@@ -24,21 +24,6 @@ namespace NewMasApp.ExternalComponents
                 EndProgram();
         }
 
-        public static void TryPost()
-        {
-            var machine = new Machine()
-            {
-                MachineName = "Eldan TestMachine"
-      ,
-                DateOfCreation = DateTime.Now
-      ,
-                CreatorID = "304873219"
-      ,
-                LanguageCode = "1"
-            };
-            dbConnection.Machines.Add(machine);
-            dbConnection.SaveChanges();
-        }
         /*EndProgram function - In case of failure on sql connection close the program*/
         private void EndProgram()
         {

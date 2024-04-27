@@ -80,7 +80,7 @@ namespace NewMasApp.WorkEntities
         /// </summary>
         /// <param name="machineName"></param>
         /// <returns></returns>
-        internal static bool DeleteOrdersByMachineName(string machineName)
+        public static bool DeleteOrdersByMachineName(string machineName)
         {
             return DBConnectionManager.DeleteOrdersByMachineName(machineName);
         }
