@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="NewManagementDBTablesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Machines">
+          <Key>
+            <PropertyRef Name="MachineName" />
+          </Key>
+          <Property Name="MachineName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateOfCreation" Type="date" Nullable="false" />
+          <Property Name="CreatorID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LanguageCode" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Parts">
+          <Key>
+            <PropertyRef Name="CatalogID" />
+          </Key>
+          <Property Name="CatalogID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemDescription" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="DateOfCreation" Type="date" Nullable="false" />
+          <Property Name="CreatorID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LanguageCode" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WorkOrders">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+          </Key>
+          <Property Name="OrderNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CatalogID" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="MachineName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="AmountToProduce" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateOfCreation" Type="date" Nullable="false" />
+          <Property Name="CreatorID" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LanguageCode" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="NewManagementDBTablesModelStoreContainer">
+          <EntitySet Name="Machines" EntityType="Self.Machines" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parts" EntityType="Self.Parts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WorkOrders" EntityType="Self.WorkOrders" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NewManagementDBTablesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Machine">
+          <Key>
+            <PropertyRef Name="MachineName" />
+          </Key>
+          <Property Name="MachineName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateOfCreation" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatorID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LanguageCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Part">
+          <Key>
+            <PropertyRef Name="CatalogID" />
+          </Key>
+          <Property Name="CatalogID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ItemDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateOfCreation" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatorID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LanguageCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WorkOrder">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+          </Key>
+          <Property Name="OrderNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CatalogID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MachineName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AmountToProduce" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateOfCreation" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatorID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LanguageCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="NewManagementDBTablesEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Machines" EntityType="Self.Machine" />
+          <EntitySet Name="Parts" EntityType="Self.Part" />
+          <EntitySet Name="WorkOrders" EntityType="Self.WorkOrder" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NewManagementDBTablesModelStoreContainer" CdmEntityContainer="NewManagementDBTablesEntities">
+          <EntitySetMapping Name="Machines">
+            <EntityTypeMapping TypeName="NewManagementDBTablesModel.Machine">
+              <MappingFragment StoreEntitySet="Machines">
+                <ScalarProperty Name="MachineName" ColumnName="MachineName" />
+                <ScalarProperty Name="DateOfCreation" ColumnName="DateOfCreation" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="LanguageCode" ColumnName="LanguageCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parts">
+            <EntityTypeMapping TypeName="NewManagementDBTablesModel.Part">
+              <MappingFragment StoreEntitySet="Parts">
+                <ScalarProperty Name="CatalogID" ColumnName="CatalogID" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="DateOfCreation" ColumnName="DateOfCreation" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="LanguageCode" ColumnName="LanguageCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorkOrders">
+            <EntityTypeMapping TypeName="NewManagementDBTablesModel.WorkOrder">
+              <MappingFragment StoreEntitySet="WorkOrders">
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="CatalogID" ColumnName="CatalogID" />
+                <ScalarProperty Name="MachineName" ColumnName="MachineName" />
+                <ScalarProperty Name="AmountToProduce" ColumnName="AmountToProduce" />
+                <ScalarProperty Name="DateOfCreation" ColumnName="DateOfCreation" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="LanguageCode" ColumnName="LanguageCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
