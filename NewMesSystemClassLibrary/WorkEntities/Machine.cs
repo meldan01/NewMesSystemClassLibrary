@@ -1,4 +1,5 @@
 ﻿using NewMasApp.ExternalComponents;
+using NewMASMAnagementApplication.WorkEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
