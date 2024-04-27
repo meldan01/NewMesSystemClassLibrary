@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NewMasApp.ExternalComponents
 {
-    class DBConnectionManager
+    public class DBConnectionManager
     {
         private static DBConnectionManager instance = null;
         private static NewManagementDBTablesEntities dbConnection = null;
