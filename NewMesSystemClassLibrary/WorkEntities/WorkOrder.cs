@@ -25,16 +25,22 @@ namespace NewMasApp.WorkEntities
             this.m_amountToProduce = quantity;
         }
 
+        /// <summary>
+        /// orderExists - return true if order with the same order number exists in DB
+        /// else false
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns></returns>
         public static bool orderExists(string orderNumber)
         {
-            return DBConnectionManager.orderNumberExists(orderNumber);
+            return DBConnectionManager.isOrderNumberExists(orderNumber);
         }
 
 
         /// <summary>
         /// sendWorkOrderToDB - Sends workOrder to the DB
         /// </summary>
-        public bool sendWorkOrderToDB()
+        public bool insertWorkOrderIntoDB()
         {
             return DBConnectionManager.sendWorkOrderToDB(m_workOrderNumber, m_partCatalogNumber, m_machineName,
             m_amountToProduce, creationDate, createdBy, languageCode);
@@ -45,10 +51,10 @@ namespace NewMasApp.WorkEntities
         /// getOrdersInfo - return all the orders information from the DB
         /// </summary>
         /// <returns></returns>
-        public static string getOrdersInfo()
+        public static string fetchOrdersInfo()
         {
             string totalWorkOrders = string.Empty;
-            totalWorkOrders = DBConnectionManager.getAllWorkOrders();
+            totalWorkOrders = DBConnectionManager.buildWorkOrdersString();
             if (totalWorkOrders == string.Empty)
                 totalWorkOrders = "No data in the DataBase";
             return totalWorkOrders;
@@ -59,9 +65,9 @@ namespace NewMasApp.WorkEntities
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public static bool deleteWorkOrderByOrderNumber(string orderNumber)
+        public static bool deleteWorkOrder(string orderNumber)
         {
-            return DBConnectionManager.deleteWorkOrderByOrderNumber(orderNumber);
+            return DBConnectionManager.deleteWorkOrder(orderNumber);
         }
 
         /// <summary>

@@ -1,12 +1,8 @@
 ﻿using NewMesSystemClassLibrary;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Configuration;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NewMasApp.ExternalComponents
 {
@@ -51,7 +47,7 @@ namespace NewMasApp.ExternalComponents
         /// dbWorkOrderContent - returns all the object in the workOrder Database table
         /// </summary>
         /// <returns></returns>
-        public static string getAllWorkOrders()
+        public static string buildWorkOrdersString()
         {
             StringBuilder OrdersInfo = new StringBuilder();
             try
@@ -84,7 +80,7 @@ namespace NewMasApp.ExternalComponents
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public static bool orderNumberExists(string orderNumber)
+        public static bool isOrderNumberExists(string orderNumber)
         {
             try
             {
@@ -137,7 +133,7 @@ namespace NewMasApp.ExternalComponents
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        public static bool deleteWorkOrderByOrderNumber(string orderNumber)
+        public static bool deleteWorkOrder(string orderNumber)
         {
             try
             {
@@ -231,7 +227,7 @@ namespace NewMasApp.ExternalComponents
         /// dbPartsContent - returns all the content of Parts DB table
         /// </summary>
         /// <returns></returns>
-        public static string getAllPartsInfo()
+        public static string buildPartsString()
         {
             try
             {
@@ -262,7 +258,7 @@ namespace NewMasApp.ExternalComponents
         /// </summary>
         /// <param name="catalogID"></param>
         /// <returns></returns>
-        public static bool catalogIDExists(string catalogID)
+        public static bool isCatalogIDExists(string catalogID)
         {
             try
             {
@@ -365,7 +361,7 @@ namespace NewMasApp.ExternalComponents
         /// <param name="creationDate"></param>
         /// <param name="createdBy"></param>
         /// <param name="languageCode"></param>
-        public static bool addPartToDb(string catalogNumber, string description, DateTime creationDate, string createdBy, string languageCode)
+        public static bool insertPartIntoDB(string catalogNumber, string description, DateTime creationDate, string createdBy, string languageCode)
         {
             try
             {
@@ -390,6 +386,37 @@ namespace NewMasApp.ExternalComponents
             }
         }
 
+        /// <summary>
+        /// deleteWorkOrdersByCatalogID - gets a catalog ID (of part) and deletes all related Work orders
+        /// </summary>
+        /// <param name="catalogID"></param>
+        /// <returns></returns>
+        public static bool deleteWorkOrdersByCatalogID(string catalogID)
+        {
+            try
+            {
+                var workOrdersToDelete = dbConnection.WorkOrders.Where(o => o.CatalogID == catalogID).ToList();
+                if (workOrdersToDelete.Any())
+                {
+                    dbConnection.WorkOrders.RemoveRange(workOrdersToDelete);
+                    dbConnection.SaveChanges();
+                    loggerInstance.Log("Debug" + $" - Work orders with catalog ID '{catalogID}' deleted successfully.");
+                    return true;
+                }
+                else
+                {
+                    loggerInstance.Log("Debug" + $" - No work orders found with catalog ID '{catalogID}'.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                loggerInstance.Log("Error" + $" - An error occurred while deleting the work orders: {ex.Message}");
+                return false;
+            }
+        }
+
+
         #endregion PartQuery
         #region machineSQLQuerys
 
@@ -397,7 +424,7 @@ namespace NewMasApp.ExternalComponents
         /// dbMachinesContent - returns all the content of machines table in the DB
         /// </summary>
         /// <returns></returns>
-        public static string getAllMachinesInfo()
+        public static string buildMachinesString()
         {
             StringBuilder contentString = new StringBuilder();
             try
@@ -409,7 +436,7 @@ namespace NewMasApp.ExternalComponents
                     contentString.AppendLine($"Date of creation: {machine.DateOfCreation.ToString("dd/MM/yyyy")},");
                     contentString.AppendLine($"Creator ID: {machine.CreatorID},");
                     contentString.AppendLine($"Language code: {machine.LanguageCode}");
-                    contentString.AppendLine(); // Add an empty line between each machine
+                    contentString.AppendLine();
                 }
                 return contentString.ToString();
             }
@@ -425,7 +452,7 @@ namespace NewMasApp.ExternalComponents
         /// </summary>
         /// <param name="machineName"></param>
         /// <returns></returns>
-        public static bool machineExists(string machineName)
+        public static bool isMachineExists(string machineName)
         {
             try
             {
@@ -446,7 +473,7 @@ namespace NewMasApp.ExternalComponents
         /// <param name="creationDateLocal"></param>
         /// <param name="creatorID"></param>
         /// <param name="languageCode"></param>
-        public static bool addMachineToDb(string machineName, DateTime creationDateLocal, string creatorID, string languageCode)
+        public static bool insertMachineIntoDB(string machineName, DateTime creationDateLocal, string creatorID, string languageCode)
         {
             try
             {
@@ -506,7 +533,7 @@ namespace NewMasApp.ExternalComponents
         /// </summary>
         /// <param name="machineName"></param>
         /// <returns></returns>
-        public static bool DeleteOrdersByMachineName(string machineName)
+        public static bool deleteOrdersByMachineName(string machineName)
         {
             try
             {

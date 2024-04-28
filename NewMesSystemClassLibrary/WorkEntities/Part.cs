@@ -29,16 +29,16 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public static bool partExists(string catalogName)
         {
-            return DBConnectionManager.catalogIDExists(catalogName);
+            return DBConnectionManager.isCatalogIDExists(catalogName);
         }
 
         /// <summary>
         /// Adds an object to the DB
         /// </summary>
         /// <returns></returns>
-        public bool sendPartToDB()
+        public bool insertPartIntoDB()
         {
-            return DBConnectionManager.addPartToDb(m_catalogNumber, m_description, creationDate, createdBy, languageCode);
+            return DBConnectionManager.insertPartIntoDB(m_catalogNumber, m_description, creationDate, createdBy, languageCode);
         }
 
 
@@ -52,10 +52,10 @@ namespace NewMasApp.WorkEntities
         /// getPartsInfo - build a string of info of all the Part DB table
         /// </summary>
         /// <returns></returns>
-        public static string getPartsInfo()
+        public static string fetchPartsInfo()
         {
             string totalParts = string.Empty;
-            totalParts = DBConnectionManager.getAllPartsInfo();
+            totalParts = DBConnectionManager.buildPartsString();
             if (totalParts == string.Empty)
                 totalParts = "No data in the DataBase.";
             return totalParts;
@@ -69,6 +69,16 @@ namespace NewMasApp.WorkEntities
         public static bool deletePart(string catalogID)
         {
             return DBConnectionManager.deletePart(catalogID);
+        }
+
+        /// <summary>
+        /// deleteWorkOrdersByCatalogID - gets a part catalog ID and deletes all the orders related.
+        /// </summary>
+        /// <param name="catalogID"></param>
+        /// <returns></returns>
+        public static bool deleteWorkOrdersByCatalogID(string catalogID)
+        {
+            return DBConnectionManager.deleteWorkOrdersByCatalogID(catalogID);
         }
 
     }

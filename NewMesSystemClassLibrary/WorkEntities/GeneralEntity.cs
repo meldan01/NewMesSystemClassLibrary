@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewMasApp.ExternalComponents;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,27 @@ namespace NewMASMAnagementApplication.WorkEntities
 
         public GeneralEntity(DateTime creationDate, string createdBy, string languageCode)
         {
-            this.creationDate = creationDate;
+            this.creationDate = returnValidatedDate(creationDate);
             this.createdBy = createdBy;
             this.languageCode = languageCode;
         }
+
+        private DateTime returnValidatedDate(DateTime? creationDate)
+        {
+            if (creationDate.HasValue)
+                return creationDate.Value;
+            return DateTime.Now;
+        }
+
+        private string returnValidatedCreator(string creatorID)
+        {
+            if (string.IsNullOrEmpty(creatorID) )
+                return "000000000";
+            return creatorID;
+        }
+
+
+
 
     }
 }
