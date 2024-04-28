@@ -15,27 +15,9 @@ namespace NewMASMAnagementApplication.WorkEntities
 
         public GeneralEntity(DateTime creationDate, string createdBy, string languageCode)
         {
-            this.creationDate = returnValidatedDate(creationDate);
+            this.creationDate = creationDate;
             this.createdBy = createdBy;
             this.languageCode = languageCode;
         }
-
-        private DateTime returnValidatedDate(DateTime? creationDate)
-        {
-            if (creationDate.HasValue)
-                return creationDate.Value;
-            return DateTime.Now;
-        }
-
-        private string returnValidatedCreator(string creatorID)
-        {
-            if (string.IsNullOrEmpty(creatorID) )
-                return "000000000";
-            return creatorID;
-        }
-
-
-
-
     }
 }
