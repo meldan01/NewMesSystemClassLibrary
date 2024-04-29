@@ -42,9 +42,24 @@ namespace NewMasApp.WorkEntities
         /// </summary>
         public bool insertWorkOrderIntoDB()
         {
+            if (!validateFieldsNotNullOrEmpty())
+                return false;
             return DBConnectionManager.sendWorkOrderToDB(m_workOrderNumber, m_partCatalogNumber, m_machineName,
             m_amountToProduce, creationDate, createdBy, languageCode);
         }
+
+        /// <summary>
+        /// validateFieldsNotNullOrEmpty - one last validation in addition to the UI checks that no fields 
+        /// will enter null or umpty to the DB
+        /// </summary>
+        /// <returns></returns>
+        private bool validateFieldsNotNullOrEmpty()
+        {
+            if (string.IsNullOrEmpty(m_workOrderNumber) || string.IsNullOrEmpty(m_partCatalogNumber) || string.IsNullOrEmpty(m_machineName) ||
+                string.IsNullOrEmpty(m_amountToProduce) || string.IsNullOrEmpty(createdBy) || string.IsNullOrEmpty(languageCode) || creationDate == DateTime.MinValue)
+                return false;
+            return true;
+                } 
 
 
         /// <summary>

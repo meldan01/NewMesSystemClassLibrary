@@ -38,9 +38,23 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public bool insertPartIntoDB()
         {
+            if (!validateFieldsNotNullOrEmpty())
+                return false;
             return DBConnectionManager.insertPartIntoDB(m_catalogNumber, m_description, creationDate, createdBy, languageCode);
         }
 
+        /// <summary>
+        /// validateFieldsNotNullOrEmpty - one last validation in addition to the UI checks that no fields 
+        /// will enter null or umpty to the DB
+        /// </summary>
+        /// <returns></returns>
+        private bool validateFieldsNotNullOrEmpty()
+        {
+            if(string.IsNullOrEmpty(m_catalogNumber) || string.IsNullOrEmpty(m_description) || string.IsNullOrEmpty(createdBy) ||
+                string.IsNullOrEmpty(languageCode) || creationDate == DateTime.MinValue)
+                return false;
+            return true;
+        }
 
         public static bool updatePart(string catalogID, string itemDescription, DateTime? selectedDate, string creatorID, string languageCode)
         {

@@ -34,7 +34,21 @@ namespace NewMasApp.WorkEntities
         /// </summary>
         public bool insertMachineIntoDB()
         {
+            if (!validateFieldsNotNullOrEmpty())
+                return false;
             return DBConnectionManager.insertMachineIntoDB(m_machineName, creationDate, createdBy, languageCode);
+        }
+
+        /// <summary>
+        /// validateFieldsNotNullOrEmpty - one last validation in addition to the UI checks that no fields 
+        /// will enter null or umpty to the DB
+        /// </summary>
+        /// <returns></returns>
+        private bool validateFieldsNotNullOrEmpty()
+        {
+            if (string.IsNullOrEmpty(m_machineName) || string.IsNullOrEmpty(createdBy) || string.IsNullOrEmpty(languageCode) || creationDate == DateTime.MinValue)
+                return false;
+            return true;
         }
 
         /// <summary>
