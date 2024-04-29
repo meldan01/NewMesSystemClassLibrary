@@ -9,15 +9,33 @@ namespace NewMASMAnagementApplication.WorkEntities
 {
     public class GeneralEntity
     {
-        public DateTime creationDate { get; set; }
-        public string createdBy { get; set; }
-        public string languageCode { get; set; }
+        private DateTime m_creationDate;
+        private string m_createdBy;
+        private string m_languageCode;
+
+        public DateTime CreationDate
+        {
+            get { return m_creationDate; }
+            set { m_creationDate = value; }
+        }
+
+        public string CreatedBy
+        {
+            get { return m_createdBy; }
+            set { m_createdBy = value; }
+        }
+
+        public string LanguageCode
+        {
+            get { return m_languageCode; }
+            set { m_languageCode = value; }
+        }
 
         public GeneralEntity(DateTime creationDate, string createdBy, string languageCode)
         {
-            this.creationDate = creationDate;
-            this.createdBy = createdBy;
-            this.languageCode = languageCode;
+            CreationDate = creationDate;
+            CreatedBy = createdBy;
+            LanguageCode = languageCode;
         }
     }
 }

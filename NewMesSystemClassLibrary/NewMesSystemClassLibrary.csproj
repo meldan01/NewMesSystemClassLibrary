@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="ExternalComponents\DBConnectionManager.cs" />
     <Compile Include="ExternalComponents\Logger.cs" />
+    <Compile Include="ExternalComponents\Validations.cs" />
     <Compile Include="Machine.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

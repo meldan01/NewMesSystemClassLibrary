@@ -1,106 +1,144 @@
-﻿using NewMasApp.ExternalComponents;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NewMesSystemClassLibrary.ExternalComponents;
 
 namespace NewMasApp.WorkEntities
 {
     public class WorkOrder : NewMASMAnagementApplication.WorkEntities.GeneralEntity
     {
-        public string m_workOrderNumber { get; set; }
-        public string m_partCatalogNumber { get; set; }
-        public string m_machineName { get; set; }
-        public string m_amountToProduce { get; set; }
+        private string m_workOrderNumber;
+        private string m_partCatalogNumber;
+        private string m_machineName;
+        private WorkEntities.Machine m_machine;
+        private Validations validations;
+        private string m_amountToProduce;
 
-        private static Logger logInstance = Logger.getInstance();
+        public string WorkOrderNumber
+        {
+            get { return m_workOrderNumber; }
+            set { m_workOrderNumber = value; }
+        }
+
+        public string PartCatalogNumber
+        {
+            get { return m_partCatalogNumber; }
+            set { m_partCatalogNumber = value; }
+        }
+
+        public string MachineName
+        {
+            get { return m_machineName; }
+            set { m_machineName = value; }
+        }
+
+        public string AmountToProduce
+        {
+            get { return m_amountToProduce; }
+            set { m_amountToProduce = value; }
+        }
+
+        private static ExternalComponents.Logger logInstance = ExternalComponents.Logger.getInstance();
 
         public WorkOrder(DateTime creationDate, string createdBy, string languageCode, string workOrderNumber, string partCatalogNumber, string machineName, string quantity)
             : base(creationDate, createdBy, languageCode)
         {
-            this.m_workOrderNumber = workOrderNumber;
-            this.m_partCatalogNumber = partCatalogNumber;
-            this.m_machineName = machineName;
-            this.m_amountToProduce = quantity;
+            WorkOrderNumber = workOrderNumber;
+            PartCatalogNumber = partCatalogNumber;
+            MachineName = machineName;
+            AmountToProduce = quantity;
+            m_machine =  Machine.getMachineFromDb(machineName);
+            validations = Validations.GetInstance();
         }
 
-        /// <summary>
-        /// orderExists - return true if order with the same order number exists in DB
-        /// else false
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
         public static bool orderExists(string orderNumber)
         {
-            return DBConnectionManager.isOrderNumberExists(orderNumber);
+            return ExternalComponents.DBConnectionManager.isOrderNumberExists(orderNumber);
         }
 
-
-        /// <summary>
-        /// sendWorkOrderToDB - Sends workOrder to the DB
-        /// </summary>
         public bool insertWorkOrderIntoDB()
         {
-            if (!validateFieldsNotNullOrEmpty())
+            if (!validateFieldsNotNullOrEmpty() || !validateFields(WorkOrderNumber, PartCatalogNumber, MachineName,
+                AmountToProduce, CreationDate, CreatedBy, LanguageCode))
                 return false;
-            return DBConnectionManager.sendWorkOrderToDB(m_workOrderNumber, m_partCatalogNumber, m_machineName,
-            m_amountToProduce, creationDate, createdBy, languageCode);
+            return ExternalComponents.DBConnectionManager.sendWorkOrderToDB(WorkOrderNumber, PartCatalogNumber, MachineName,
+                AmountToProduce, CreationDate, CreatedBy, LanguageCode);
         }
 
-        /// <summary>
-        /// validateFieldsNotNullOrEmpty - one last validation in addition to the UI checks that no fields 
-        /// will enter null or umpty to the DB
-        /// </summary>
-        /// <returns></returns>
-        private bool validateFieldsNotNullOrEmpty()
+        private bool validateFields(string workOrderNumber, string partCatalogNumber, string machineName, string amountToProduce, DateTime creationDate, string createdBy, string languageCode)
         {
-            if (string.IsNullOrEmpty(m_workOrderNumber) || string.IsNullOrEmpty(m_partCatalogNumber) || string.IsNullOrEmpty(m_machineName) ||
-                string.IsNullOrEmpty(m_amountToProduce) || string.IsNullOrEmpty(createdBy) || string.IsNullOrEmpty(languageCode) || creationDate == DateTime.MinValue)
+            if (!Validations.validateOrderNumber(workOrderNumber))
+                return false;
+            if (!Validations.validateCatalogNumber(partCatalogNumber))
+                return false;
+            if (!Validations.validateMachineName(machineName))
+                return false;
+            if (!Validations.validateQuantity(amountToProduce))
+                return false;
+            if (!Validations.validateCreationDate(creationDate))
+                return false;
+            if (!Validations.validateCreatorID(createdBy))
+                return false;
+            if (!Validations.validateLanguageCode(languageCode))
+                return false;
+            if (!Machine.machineExists(machineName))
+                return false;
+            if (!Part.partExists(partCatalogNumber))
                 return false;
             return true;
-                } 
+        }
 
+        private bool validateFieldsNotNullOrEmpty()
+        {
+            if (string.IsNullOrEmpty(WorkOrderNumber) || string.IsNullOrEmpty(PartCatalogNumber) || string.IsNullOrEmpty(MachineName) ||
+                string.IsNullOrEmpty(AmountToProduce) || string.IsNullOrEmpty(CreatedBy) || string.IsNullOrEmpty(LanguageCode) || CreationDate == DateTime.MinValue)
+                return false;
+            return true;
+        }
 
-        /// <summary>
-        /// getOrdersInfo - return all the orders information from the DB
-        /// </summary>
-        /// <returns></returns>
         public static string fetchOrdersInfo()
         {
-            string totalWorkOrders = string.Empty;
-            totalWorkOrders = DBConnectionManager.buildWorkOrdersString();
+            string totalWorkOrders = ExternalComponents.DBConnectionManager.buildWorkOrdersString();
             if (totalWorkOrders == string.Empty)
                 totalWorkOrders = "No data in the DataBase";
             return totalWorkOrders;
         }
 
-        /// <summary>
-        /// deleteWorkOrderByOrderNumber - gets an order number and delete it from the WorkOrder table
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <returns></returns>
         public static bool deleteWorkOrder(string orderNumber)
         {
-            return DBConnectionManager.deleteWorkOrder(orderNumber);
+            return ExternalComponents.DBConnectionManager.deleteWorkOrder(orderNumber);
         }
 
-        /// <summary>
-        /// updateWorkOrder - gets the entire properties of workOrder(some might be null) 
-        /// and updates order in the db, by primary key
-        /// </summary>
-        /// <param name="orderNumber"></param>
-        /// <param name="catalogID"></param>
-        /// <param name="machineName"></param>
-        /// <param name="quantity"></param>
-        /// <param name="selectedDate"></param>
-        /// <param name="creatorID"></param>
-        /// <param name="languageCode"></param>
-        /// <returns></returns>
         public static bool updateWorkOrder(string orderNumber, string catalogID, string machineName, string quantity, DateTime? selectedDate, string creatorID, string languageCode)
         {
-            return DBConnectionManager.updateWorkOrder(orderNumber, catalogID, machineName,
+            if (!validateUpdate(orderNumber, catalogID, machineName,
+                quantity, selectedDate, creatorID, languageCode))
+                return false;
+            return ExternalComponents.DBConnectionManager.updateWorkOrder(orderNumber, catalogID, machineName,
                 quantity, selectedDate, creatorID, languageCode);
+        }
+
+        private static bool validateUpdate(string orderNumber, string catalogID, string machineName, string quantity, DateTime? selectedDate, string creatorID, string languageCode)
+        {
+            if (Validations.updateValidateOrderNumber(orderNumber))
+                return false;
+            if (!Validations.updateValidatecatalodID(catalogID))
+                return false;
+            if (!Validations.updateValidateMachineName(machineName))
+                return false; 
+            if (!Validations.updateValidateOrderQuantity(quantity))
+                return false;
+            if (!Validations.updateValidateCreator(creatorID))
+                return false;
+            if (!Validations.updateValidateLanguageCode(languageCode))
+                return false;
+            if (!Machine.machineExists(machineName))
+                return false;
+            if (!Part.partExists(catalogID))
+                return false;
+            return true;
         }
     }
 }

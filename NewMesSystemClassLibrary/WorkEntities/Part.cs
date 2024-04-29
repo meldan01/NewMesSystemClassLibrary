@@ -1,23 +1,37 @@
-﻿using NewMasApp.ExternalComponents;
-using NewMASMAnagementApplication.WorkEntities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NewMASMAnagementApplication.WorkEntities;
+using NewMesSystemClassLibrary.ExternalComponents;
 
 namespace NewMasApp.WorkEntities
 {
     public class Part : GeneralEntity
     {
-        public string m_catalogNumber { get; set; }
-        public string m_description { get; set; }
+        private string m_catalogNumber;
+        private string m_description;
+        private Validations validations;
+
+        public string CatalogNumber
+        {
+            get { return m_catalogNumber; }
+            set { m_catalogNumber = value; }
+        }
+
+        public string Description
+        {
+            get { return m_description; }
+            set { m_description = value; }
+        }
 
         public Part(DateTime creationDate, string createdBy, string languageCode, string catalogNumber, string description)
             : base(creationDate, createdBy, languageCode)
         {
-            m_catalogNumber = catalogNumber;
-            m_description = description;
+            CatalogNumber = catalogNumber;
+            Description = description;
+            validations = Validations.GetInstance();
         }
 
 
@@ -28,7 +42,7 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public static bool partExists(string catalogName)
         {
-            return DBConnectionManager.isCatalogIDExists(catalogName);
+            return ExternalComponents.DBConnectionManager.isCatalogIDExists(catalogName);
         }
 
         /// <summary>
@@ -37,9 +51,26 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public bool insertPartIntoDB()
         {
-            if (!validateFieldsNotNullOrEmpty())
+            if (!validateFieldsNotNullOrEmpty() || !validateSavePart(CatalogNumber, Description, CreationDate, CreatedBy, LanguageCode))
                 return false;
-            return DBConnectionManager.insertPartIntoDB(m_catalogNumber, m_description, creationDate, createdBy, languageCode);
+            return ExternalComponents.DBConnectionManager.insertPartIntoDB(CatalogNumber, Description, CreationDate, CreatedBy, LanguageCode);
+        }
+
+        private bool validateSavePart(string catalogNumber, string description, DateTime creationDate, string createdBy, string languageCode)
+        {
+            if (!Validations.validateCatalogNumber(catalogNumber))
+                return false;
+            if (!Validations.validateDescription(description))
+                return false;
+            if (!Validations.validateCreationDate(creationDate))
+                return false;
+            if (!Validations.validateCreatorID(createdBy))
+                return false;
+            if (!Validations.validateLanguageCode(languageCode))
+                return false;
+            if (partExists(catalogNumber))
+                return false;
+            return true;
         }
 
         /// <summary>
@@ -49,8 +80,8 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         private bool validateFieldsNotNullOrEmpty()
         {
-            if(string.IsNullOrEmpty(m_catalogNumber) || string.IsNullOrEmpty(m_description) || string.IsNullOrEmpty(createdBy) ||
-                string.IsNullOrEmpty(languageCode) || creationDate == DateTime.MinValue)
+            if (string.IsNullOrEmpty(CatalogNumber) || string.IsNullOrEmpty(Description) || string.IsNullOrEmpty(CreatedBy) ||
+                string.IsNullOrEmpty(LanguageCode) || CreationDate == DateTime.MinValue)
                 return false;
             return true;
         }
@@ -66,7 +97,33 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public static bool updatePart(string catalogID, string itemDescription, DateTime? selectedDate, string creatorID, string languageCode)
         {
-            return DBConnectionManager.updatePart(catalogID, itemDescription, selectedDate, creatorID, languageCode);
+            if (!validatePartUpdate(catalogID, itemDescription, selectedDate, creatorID, languageCode))
+                return false;
+            return ExternalComponents.DBConnectionManager.updatePart(catalogID, itemDescription, selectedDate, creatorID, languageCode);
+        }
+
+        /// <summary>
+        /// validatePartUpdate - backend validations
+        /// </summary>
+        /// <param name="catalogID"></param>
+        /// <param name="itemDescription"></param>
+        /// <param name="selectedDate"></param>
+        /// <param name="creatorID"></param>
+        /// <param name="languageCode"></param>
+        /// <returns></returns>
+        private static bool validatePartUpdate(string catalogID, string itemDescription, DateTime? selectedDate, string creatorID, string languageCode)
+        {
+            if (!Validations.updateValidatecatalodID(catalogID))
+                return false;
+            if (!Validations.updateDescriptionLengthCheck(itemDescription))
+                return false;
+            if (Validations.updateValidateCreator(creatorID))
+                return false;
+            if (Validations.updateValidateLanguageCode(languageCode))
+                return false;
+            if (!partExists(catalogID))
+                return false;
+            return true;
         }
 
 
@@ -77,7 +134,7 @@ namespace NewMasApp.WorkEntities
         public static string fetchPartsInfo()
         {
             string totalParts = string.Empty;
-            totalParts = DBConnectionManager.buildPartsString();
+            totalParts = ExternalComponents.DBConnectionManager.buildPartsString();
             if (totalParts == string.Empty)
                 totalParts = "No data in the DataBase.";
             return totalParts;
@@ -90,7 +147,9 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public static bool deletePart(string catalogID)
         {
-            return DBConnectionManager.deletePart(catalogID);
+            if (!partExists(catalogID))
+                return false;
+            return ExternalComponents.DBConnectionManager.deletePart(catalogID);
         }
 
         /// <summary>
@@ -100,7 +159,7 @@ namespace NewMasApp.WorkEntities
         /// <returns></returns>
         public static bool deleteWorkOrdersByCatalogID(string catalogID)
         {
-            return DBConnectionManager.deleteWorkOrdersByCatalogID(catalogID);
+            return ExternalComponents.DBConnectionManager.deleteWorkOrdersByCatalogID(catalogID);
         }
 
     }

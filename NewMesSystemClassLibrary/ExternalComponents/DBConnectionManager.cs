@@ -489,6 +489,20 @@ namespace NewMasApp.ExternalComponents
             }
         }
 
+        public static WorkEntities.Machine getMachine(string machineName)
+        {
+            try
+            {
+                    Machine dbMachine =  dbConnection.Machines.FirstOrDefault(m => m.MachineName == machineName);
+                    return new WorkEntities.Machine(dbMachine.DateOfCreation, dbMachine.CreatorID, dbMachine.LanguageCode, dbMachine.MachineName);
+            }
+            catch (Exception ex)
+            {
+                loggerInstance.Log("Error - " + ex.Message);
+                return null;
+            }
+        }
+
         /// <summary>
         /// DeleteMachine - deletes machine in the DB by primaryKey machineName
         /// </summary>
