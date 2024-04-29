@@ -149,7 +149,7 @@ namespace NewMesSystemClassLibrary.ExternalComponents
         /// <returns></returns>
         public static bool updateValidateLanguageCode(string languageCode)
         {
-            if (!string.IsNullOrEmpty(languageCode) && !languageCode.All(char.IsDigit) || languageCode.Length > 5)
+            if (!string.IsNullOrEmpty(languageCode) && ( !languageCode.All(char.IsDigit) || languageCode.Length > 5))
                 return false;
             return true;
         }
@@ -205,7 +205,7 @@ namespace NewMesSystemClassLibrary.ExternalComponents
         
         public static bool updateValidatecatalodID(string catalogNumber)
         {
-            if (string.IsNullOrEmpty(catalogNumber) || catalogNumber.Length > 50)
+            if (!string.IsNullOrEmpty(catalogNumber) && ((!catalogNumber.All(char.IsDigit) || catalogNumber.Length > 50)))
             {
                 return false;
             }

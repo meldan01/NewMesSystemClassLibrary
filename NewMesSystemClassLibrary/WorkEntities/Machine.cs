@@ -48,13 +48,13 @@ namespace NewMasApp.WorkEntities
 
         private bool validateFields(string machineName, DateTime? creationDate,string creatorID,string languageCode)
         {
-            if (Validations.validateMachineName(machineName))
+            if (!Validations.validateMachineName(machineName))
                 return false;
-            if (Validations.validateCreationDate(creationDate))
+            if (!Validations.validateCreationDate(creationDate))
                 return false;
-            if (Validations.validateCreatorID(creatorID))
+            if (!Validations.validateCreatorID(creatorID))
                 return false; 
-            if (Validations.validateLanguageCode(languageCode))
+            if (!Validations.validateLanguageCode(languageCode))
                 return false;
             if (machineExists(machineName))
                 return false;

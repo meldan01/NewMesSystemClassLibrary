@@ -87,6 +87,8 @@ namespace NewMasApp.WorkEntities
                 return false;
             if (!Part.partExists(partCatalogNumber))
                 return false;
+            if (orderExists(workOrderNumber))
+                return false;
             return true;
         }
 
@@ -122,7 +124,7 @@ namespace NewMasApp.WorkEntities
 
         private static bool validateUpdate(string orderNumber, string catalogID, string machineName, string quantity, DateTime? selectedDate, string creatorID, string languageCode)
         {
-            if (Validations.updateValidateOrderNumber(orderNumber))
+            if (!Validations.updateValidateOrderNumber(orderNumber))
                 return false;
             if (!Validations.updateValidatecatalodID(catalogID))
                 return false;
@@ -137,6 +139,8 @@ namespace NewMasApp.WorkEntities
             if (!Machine.machineExists(machineName))
                 return false;
             if (!Part.partExists(catalogID))
+                return false;
+            if (!orderExists(orderNumber))
                 return false;
             return true;
         }

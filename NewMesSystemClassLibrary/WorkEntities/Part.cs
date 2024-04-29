@@ -117,9 +117,9 @@ namespace NewMasApp.WorkEntities
                 return false;
             if (!Validations.updateDescriptionLengthCheck(itemDescription))
                 return false;
-            if (Validations.updateValidateCreator(creatorID))
+            if (!Validations.updateValidateCreator(creatorID))
                 return false;
-            if (Validations.updateValidateLanguageCode(languageCode))
+            if (!Validations.updateValidateLanguageCode(languageCode))
                 return false;
             if (!partExists(catalogID))
                 return false;
