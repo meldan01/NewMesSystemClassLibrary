@@ -13,21 +13,13 @@ namespace NewMasApp.ExternalComponents
         private static Logger loggerInstance = Logger.getInstance();
 
 
-        /*Establish DB connection(Constructor)*/
+        /// <summary>
+        /// DBConnectionManager - Establish DB connection(Constructor)
+        /// </summary>
         private DBConnectionManager()
         {
             dbConnection = new NewManagementDBTablesEntities();
-            if (dbConnection == null)
-                EndProgram();
         }
-
-        /*EndProgram function - In case of failure on sql connection close the program*/
-        private void EndProgram()
-        {
-            loggerInstance.Log("Error" + "- Could not establish DB connection, Exit program with code 1.");
-            //Environment.Exit(0);
-        }
-
 
         /// <summary>
         /// Public static method to get the singeltone of the db connection

@@ -12,7 +12,6 @@ namespace NewMasApp.WorkEntities
     {
         public string m_catalogNumber { get; set; }
         public string m_description { get; set; }
-        private Logger logInstance = Logger.getInstance();
 
         public Part(DateTime creationDate, string createdBy, string languageCode, string catalogNumber, string description)
             : base(creationDate, createdBy, languageCode)
@@ -56,6 +55,15 @@ namespace NewMasApp.WorkEntities
             return true;
         }
 
+        /// <summary>
+        /// updatePart - Updates the fields that are not null or empty in the DB
+        /// </summary>
+        /// <param name="catalogID"></param>
+        /// <param name="itemDescription"></param>
+        /// <param name="selectedDate"></param>
+        /// <param name="creatorID"></param>
+        /// <param name="languageCode"></param>
+        /// <returns></returns>
         public static bool updatePart(string catalogID, string itemDescription, DateTime? selectedDate, string creatorID, string languageCode)
         {
             return DBConnectionManager.updatePart(catalogID, itemDescription, selectedDate, creatorID, languageCode);
